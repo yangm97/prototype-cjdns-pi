@@ -14,7 +14,10 @@ if ! [ -f /etc/radvd.conf ]; then
 fi
 
 sudo apt-get install -y confget hostapd radvd iptables bridge-utils
-systemctl enable systemd-networkd
+
+#check if orange pi needs this line
+systemctl enable systemd-networkd || true 
+systemctl enable systemd-networkd.service || true
 
 APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
 
