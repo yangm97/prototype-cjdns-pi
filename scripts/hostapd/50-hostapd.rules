@@ -1,3 +1,4 @@
+# SOURCE: mesh-orange/debian/packages.d/hostapd.customise.add/etc/udev/rules.d/50-hostapd.rules
 # Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
 #
 # any wlan device with a *hostap.link file will get a hostapd running

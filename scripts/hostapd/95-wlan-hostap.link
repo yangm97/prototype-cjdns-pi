@@ -1,5 +1,7 @@
 # make the wlan devices for hostap match "*hostap.link"
 # By default, all wlan interfaces will be access points
+# mesh-orange/debian/packages.d/hostapd.customise.add/etc/systemd/network/95-wlan-hostap.link
+
 [Match]
 Type=wlan
 Driver=xradio_wlan brcmfmac
