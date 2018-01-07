@@ -15,6 +15,10 @@ fi
 
 sudo apt-get install -y confget hostapd radvd iptables bridge-utils
 
+#check if orange pi needs this line
+systemctl enable systemd-networkd || true 
+systemctl enable systemd-networkd.service || true
+
 APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
 
 # Select wpa-eap or wpa-psk
@@ -76,3 +80,22 @@ sudo cp "$BASE_DIR/hostapd.nat" /usr/local/sbin/hostapd.nat
 sudo chmod 744 /usr/local/sbin/hostapd.nat
 
 sudo cp $BASE_DIR/radvd.conf "/etc/radvd.conf"
+
+
+echo "source-directory /etc/network/interfaces.d" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "auto lo"  | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface eth0 inet dhcp" | sudo tee --append /etc/network/interfaces > /dev/null

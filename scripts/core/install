@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Systemd DNS Resolver
+systemctl enable systemd-resolved.service
+sudo cp "$BASE_DIR/resolved.conf" "/etc/systemd/resolved.conf"
+
+# Systemd Network Service
+
+# Disable NetworkManager (If enabled)
+#check if orange pi needs this line
+systemctl enable systemd-networkd || true 
+systemctl enable systemd-networkd.service || true
+
+# Install known network config
+sudo mv /etc/network/interfaces /etc/network/interfaces.bak
+
+sudo touch /etc/network/interfaces
+echo "source /etc/network/interfaces.d/*" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "auto lo" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
+
+# Disable DHCPClient on all interfaces except eth0 because dhcpcd messes with systemd's configs
+echo allow-hotplug eth0 | sudo tee /etc/network/interfaces.d/eth0 > /dev/null
+echo iface eth0 inet dhcp | sudo tee --append /etc/network/interfaces.d/eth0 > /dev/null
+
+echo allow-hotplug wlan0 | sudo tee /etc/network/interfaces.d/wlan0 > /dev/null
+echo iface wlan0 inet dhcp | sudo tee --append /etc/network/interfaces.d/wlan0 > /dev/null
+
+echo allow-hotplug wlan1 | sudo tee /etc/network/interfaces.d/wlan1 > /dev/null
+echo iface wlan1 inet dhcp | sudo tee --append /etc/network/interfaces.d/wlan1 > /dev/null
+
+# Disable predictable network interface naming
+sudo touch /etc/udev/rules.d/80-net-setup-link.rules
+
+# Install possibly missing tools
+sudo apt-get install haveged -y

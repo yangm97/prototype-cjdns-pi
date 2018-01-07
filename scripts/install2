@@ -75,31 +75,6 @@ echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD
 # Enable password-less sudo on Orange Pi
 sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
-# Disable predictable network interface naming
-sudo touch /etc/udev/rules.d/80-net-setup-link.rules
-
-# Disable NetworkManager
-#check if orange pi needs this line
-systemctl enable systemd-networkd || true 
-systemctl enable systemd-networkd.service || true
-
-# Install known network config
-sudo mv /etc/network/interfaces /etc/network/interfaces.bak
-sudo touch /etc/network/interfaces
-echo "source /etc/network/interfaces.d/*" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "auto lo" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
-
-# Disable DHCPClient on all interfaces except eth0 because dhcpcd messes with systemd's configs
-echo allow-hotplug eth0 | sudo tee /etc/network/interfaces.d/eth0 > /dev/null
-echo iface eth0 inet dhcp | sudo tee --append /etc/network/interfaces.d/eth0 > /dev/null
-
-echo allow-hotplug wlan0 | sudo tee /etc/network/interfaces.d/wlan0 > /dev/null
-echo iface wlan0 inet dhcp | sudo tee --append /etc/network/interfaces.d/wlan0 > /dev/null
-
-echo allow-hotplug wlan1 | sudo tee /etc/network/interfaces.d/wlan1 > /dev/null
-echo iface wlan1 inet dhcp | sudo tee --append /etc/network/interfaces.d/wlan1 > /dev/null
-
 # Set configurations specific to the board
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
     # Downgrade kernel to enable XRadio in version 4.10 on Orange Pi Zero
@@ -263,6 +238,10 @@ if [ "${#MESH_NAME}" == 0 ]; then
     export MESH_NAME="tomesh"
 fi
 
+# Install core configuration
+source core/install
+
+# Install CJDNS
 # Get tools
 if ! [ "$(which nodejs)" ]; then
     # Check for armv6 and install nodejs manually instead since it will not install via repo
@@ -276,9 +255,6 @@ if ! [ "$(which nodejs)" ]; then
        sudo apt-get install nodejs -y
    fi
 fi
-
-# Install possibly missing tools
-sudo apt-get install haveged -y
 
 # Download cjdns repo and checkout TAG_CJDNS tag
 if ! [ -d "/opt/cjdns" ]; then
