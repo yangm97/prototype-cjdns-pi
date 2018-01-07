@@ -4,10 +4,6 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Systemd DNS Resolver
-systemctl enable systemd-resolved.service
-sudo cp "$BASE_DIR/resolved.conf" "/etc/systemd/resolved.conf"
-
 # Systemd Network Service
 
 # Disable NetworkManager (If enabled)
