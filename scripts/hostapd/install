@@ -13,7 +13,7 @@ if ! [ -f /etc/radvd.conf ]; then
     sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 fi
 
-sudo apt-get install -y confget hostapd radvd iptables bridge-utils
+sudo apt-get install -y confget hostapd radvd iptables bridge-utils dnsmasq
 
 #check if orange pi needs this line
 systemctl enable systemd-networkd || true 
@@ -99,3 +99,9 @@ echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface eth0 inet dhcp" | sudo tee --append /etc/network/interfaces > /dev/null
+
+# Configure DHCP with dnsmasq
+if [ -f /etc/dnsmasq.conf ]; then
+    sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.bak
+fi
+sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
