@@ -2,10 +2,13 @@
 
 set -e
 
+AETHER_VERSION="pre01"
+
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-wget https://github.com/darkdrgn2k/ToMeshPackages/blob/master/aether/aether-be-pre01-armv6l.bin /tmp
-sudo mv /tmp/aether-be-pre01-armv6l.bin /usr/local/bin/aether-be
+wget https://github.com/darkdrgn2k/ToMeshPackages/raw/master/aether/aether-be-${AETHER_VERSION}-armv6l.bin -O /tmp/aether-be
+chmod +x /tmp/aether-be
+sudo mv /tmp/aether-be /usr/local/bin/aether-be
 
 currentUser=$USER
 
