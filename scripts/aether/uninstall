@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+sudo systemctl stop aether-be.service
+sudo systemctl disable aether-be.service
+
+sudo rm -f /etc/systemd/system/aether-be.service
+
+sudo systemctl daemon-reload
+sudo rm /usr/local/bin/aether-be
