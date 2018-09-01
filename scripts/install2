@@ -206,6 +206,7 @@ askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true -a "$BOARD_FAMILY" == "Raspberry Pi" ]; then
     askModule "WITH_IPFS_PI_STREAM" "IPFS Pi Stream" "n"
 fi
+askModule "WITH_AETHER_BE" "Aether Backend"
 askModule "WITH_SSB" "SSB"
 if [ "$WITH_SSB" == "true" ]; then
     askModule "WITH_SSB_WEB" "SSB Web Client (Experimental)" "n"
@@ -342,6 +343,9 @@ fi
 # IPFS Pi Stream
 if [ ! -x "$(command -v process-stream.sh)" -a "$(checkModule 'WITH_IPFS_PI_STREAM')" ]; then
     source ipfs-pi-stream/install
+fi
+if [ "$(checkModule 'WITH_AETHER_BE')" ]; then
+    source aether/install
 fi
 # SSB
 if [ ! -x "$(command -v sbot)" -a "$(checkModule 'WITH_SSB')" ]; then

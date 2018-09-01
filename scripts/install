@@ -51,6 +51,7 @@ export WITH_GRAFANA
 export WITH_EXTRA_TOOLS
 export WITH_WATCHDOG
 export WITH_YRD
+export WITH_AETHER_BE
 export WITH_SSB
 export WITH_SSB_WEB
 export WITH_IPFS_PI_STREAM
