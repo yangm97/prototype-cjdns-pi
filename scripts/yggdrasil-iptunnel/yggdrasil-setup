@@ -33,8 +33,17 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
 
     # Route NAT traffic through to yggdrasil ygg0 interface to use iptunnel exit server
     sudo iptables -t nat -A POSTROUTING -o ygg0 -j MASQUERADE
-
+    
+    # Flush source route table
+    ip route flush table 99;
+    ip rule flush
+    ip rule add from all lookup main pref 32766
+    ip rule add from all lookup default pref 32767    
+    
+    # Source Route from yggdrasil's ip tunnle ip
+    ip rule add from 10.10.0.0/24 table 99;
     # Special hack to change default route without removing original one
-    sudo route add  -net 0.0.0.0/1 ygg0
-    sudo route add  -net 128.0.0.0/1 ygg0
+    ip route add 0.0.0.0/1 dev ygg0 table 99
+    ip route add 128.0.0.0/1 dev ygg0 table 99
+    
 fi
